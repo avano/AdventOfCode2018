@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"strconv"
 	"strings"
+
+	"github.com/avano/AdventOfCode2018/util"
 )
 
 func exists(seen map[int]bool, freq int) bool {
@@ -16,17 +17,11 @@ func exists(seen map[int]bool, freq int) bool {
 }
 
 func main() {
-	data, err := ioutil.ReadFile("input")
-
-	if err != nil {
-		panic(err)
-	}
-
 	frequency := 0
 	firstTaskResult := 0
 	seenFrequencies := make(map[int]bool)
 
-	stringArray := strings.Split(strings.TrimSpace(string(data)), "\n")
+	stringArray := strings.Split(util.GetInputString(), "\n")
 outer:
 	for j := 0; ; j++ {
 		for i := 0; i < len(stringArray); i++ {
