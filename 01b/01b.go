@@ -17,11 +17,11 @@ func exists(seen map[int]bool, freq int) bool {
 }
 
 func main() {
+	stringArray := strings.Split(util.GetInputString(), "\n")
+
 	frequency := 0
-	firstTaskResult := 0
 	seenFrequencies := make(map[int]bool)
 
-	stringArray := strings.Split(util.GetInputString(), "\n")
 outer:
 	for j := 0; ; j++ {
 		for i := 0; i < len(stringArray); i++ {
@@ -35,13 +35,7 @@ outer:
 				break outer
 			}
 		}
-
-		if j == 0 {
-			firstTaskResult = frequency
-		}
 	}
 
-	fmt.Println("First part frequency: ", firstTaskResult)
 	fmt.Println("Duplicate frequency: ", frequency)
-
 }

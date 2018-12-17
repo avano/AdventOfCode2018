@@ -1,7 +1,7 @@
 package main
 
 import (
-	"strconv"
+	"fmt"
 	"strings"
 
 	"github.com/avano/AdventOfCode2018/util"
@@ -12,17 +12,12 @@ type claim struct {
 }
 
 func processClaim(fabric [][]int, input string) {
-	split := strings.Split(input, " ")
-	pos := strings.Split(split[2], ",")
-	size := strings.Split(split[3], "x")
+	c := &claim{}
+	_, e := fmt.Sscanf(input, "#%d @ %d,%d: %dx%d", &c.id, &c.posLeft, &c.posTop, &c.sizeX, &c.sizeY)
 
-	id, _ := strconv.ParseInt(split[0][1:len(split[0])], 0, 0)
-	posLeft, _ := strconv.ParseInt(pos[0], 0, 0)
-	posTop, _ := strconv.ParseInt(pos[1][0:len(pos[1])-1], 0, 0)
-	sizeX, _ := strconv.ParseInt(size[0], 0, 0)
-	sizeY, _ := strconv.ParseInt(size[1], 0, 0)
-
-	c := claim{id: id, posLeft: posLeft, posTop: posTop, sizeX: sizeX, sizeY: sizeY}
+	if e != nil {
+		panic(e)
+	}
 
 	for i := c.posTop; i < c.posTop+c.sizeY; i++ {
 		for j := c.posLeft; j < c.posLeft+c.sizeX; j++ {
