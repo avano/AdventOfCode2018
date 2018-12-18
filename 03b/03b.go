@@ -8,7 +8,7 @@ import (
 )
 
 type claim struct {
-	id, posLeft, posTop, sizeX, sizeY int64
+	id, posLeft, posTop, sizeX, sizeY int
 }
 
 func processClaim(fabric [][]int, input string, check bool) bool {

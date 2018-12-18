@@ -14,7 +14,7 @@ func main() {
 	frequency := 0
 
 	for i := 0; i < len(stringArray); i++ {
-		num, err := strconv.ParseInt(stringArray[i], 0, 0)
+		num, err := strconv.Atoi(stringArray[i])
 		if err != nil {
 			panic(err)
 		}
