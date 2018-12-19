@@ -15,7 +15,7 @@ func GetInputString() string {
 
 	data, err := ioutil.ReadFile(path.Join(path.Dir(file), "../../assets/day"+day))
 	if err != nil {
-		data, err2 := ioutil.ReadFile(path.Join(path.Dir(file), "../../assets/day"+day))
+		data, err2 := ioutil.ReadFile(path.Join(path.Dir(file), "../../assets/day"+day+"_example"))
 		if err2 != nil {
 			panic(err2)
 		}
