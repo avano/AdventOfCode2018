@@ -66,11 +66,11 @@ outer:
 }
 
 func main() {
-	stringArray := strings.Split(util.GetInputString(), "\n")
+	inputArray := strings.Split(util.GetInputString(), "\n")
 
 	var claims []claim
 
-	for _, line := range stringArray {
+	for _, line := range inputArray {
 		claims = append(claims, parseClaim(line))
 	}
 

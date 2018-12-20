@@ -8,10 +8,20 @@ import (
 	"github.com/avano/AdventOfCode2018/internal/app/util"
 )
 
+const workersCount = 5
+const executionTime = 60
+
 type step struct {
 	name          string
 	executed      bool
+	inProgress    bool
 	prerequisites []*step
+}
+
+type worker struct {
+	id        int
+	assigment *step
+	remaining int
 }
 
 type sortByName []*step
@@ -67,21 +77,58 @@ func (step step) canExecute() bool {
 	return !step.executed && allExecuted(step.prerequisites)
 }
 
-func executeSteps(steps []*step) string {
-	if allExecuted(steps) {
-		return ""
-	}
-
-	var executed string
+func isStepReady(steps []*step) (bool, *step) {
 	for i := 0; i < len(steps); i++ {
-		if steps[i].canExecute() {
-			executed = steps[i].name
-			steps[i].executed = true
-			break
+		if !steps[i].inProgress && steps[i].canExecute() {
+			return true, steps[i]
 		}
 	}
+	return false, nil
+}
 
-	return executed + executeSteps(steps)
+func assignWork(w *worker, steps []*step) {
+	if w.assigment == nil {
+		ready, stepPointer := isStepReady(steps)
+		if ready {
+			w.assigment = stepPointer
+			w.assigment.inProgress = true
+			w.remaining = executionTime + int((stepPointer.name[0])-64)
+		}
+	}
+}
+
+func decreaseRemainingTime(w *worker) {
+	if w.assigment != nil {
+		w.remaining--
+	}
+}
+
+func finishWorkIfDone(w *worker) {
+	if w.assigment != nil && w.remaining == 0 {
+		w.assigment.executed = true
+		w.assigment.inProgress = false
+		w.assigment = nil
+	}
+}
+
+func executeSteps(steps []*step) int {
+	var totalTime int
+	var workers [workersCount]worker
+	for totalTime = 1; ; totalTime++ {
+		for i := 0; i < workersCount; i++ {
+			assignWork(&workers[i], steps)
+			decreaseRemainingTime(&workers[i])
+		}
+
+		// Check for finished work after assigments for this second are done
+		for i := 0; i < workersCount; i++ {
+			finishWorkIfDone(&workers[i])
+		}
+
+		if allExecuted(steps) {
+			return totalTime
+		}
+	}
 }
 
 func main() {
@@ -94,5 +141,6 @@ func main() {
 	}
 
 	sort.Sort(sortByName(steps))
-	fmt.Printf("Execution order: %s\n", executeSteps(steps))
+
+	fmt.Printf("Execution time: %d\n", executeSteps(steps))
 }
