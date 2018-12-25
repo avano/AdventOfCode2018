@@ -19,8 +19,8 @@ func GetInputString() string {
 		if err2 != nil {
 			panic(err2)
 		}
-		return strings.TrimSpace(string(data))
+		return strings.TrimRight(string(data), "\n")
 	}
 
-	return strings.TrimSpace(string(data))
+	return strings.TrimRight(string(data), "\n")
 }
