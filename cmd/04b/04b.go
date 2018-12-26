@@ -1,4 +1,4 @@
-package main
+package day04b
 
 import (
 	"fmt"
@@ -7,7 +7,15 @@ import (
 	"strings"
 
 	"github.com/avano/AdventOfCode2018/internal/app/util"
+	"github.com/spf13/cobra"
 )
+
+var file *string
+var example *bool
+
+func init() {
+	file, example = util.RegisterCommand("day04b", "Day 4 - Second Part", run)
+}
 
 type guard struct {
 	id    int
@@ -57,16 +65,16 @@ func processGuard(guards []guard, timetable []string) guard {
 	return gu
 }
 
-func main() {
-	inputArray := strings.Split(util.GetInputString(), "\n")
-	sort.Strings(inputArray)
+func run(cmd *cobra.Command, _ []string) {
+	input := strings.Split(util.ReadInput(file, example), "\n")
+	sort.Strings(input)
 
 	var guards []guard
 	lastIndex := 0
-	for i := 0; i < len(inputArray); i++ {
-		if i == len(inputArray)-1 || strings.Contains(inputArray[i+1], "Guard") {
-			if len(inputArray[lastIndex:i]) > 0 {
-				guards = append(guards, processGuard(guards, inputArray[lastIndex:i+1]))
+	for i := 0; i < len(input); i++ {
+		if i == len(input)-1 || strings.Contains(input[i+1], "Guard") {
+			if len(input[lastIndex:i]) > 0 {
+				guards = append(guards, processGuard(guards, input[lastIndex:i+1]))
 			}
 			lastIndex = i + 1
 		}
@@ -85,6 +93,5 @@ func main() {
 		}
 	}
 
-	fmt.Printf("Most sleepy minute %d (%d times) by Guard #%d\n", mostSleepyMinute, max, guardID)
 	fmt.Printf("Result: %d\n", guardID*mostSleepyMinute)
 }

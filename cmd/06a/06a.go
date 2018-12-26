@@ -1,4 +1,4 @@
-package main
+package day06a
 
 import (
 	"fmt"
@@ -6,17 +6,27 @@ import (
 	"strings"
 
 	"github.com/avano/AdventOfCode2018/internal/app/util"
+	"github.com/spf13/cobra"
 )
+
+var file *string
+var example *bool
+
+func init() {
+	file, example = util.RegisterCommand("day06a", "Day 6 - First Part", run)
+}
 
 type point struct {
 	id, x, y int
 }
 
+var points []point
+
 func distance(p1, p2 point) int {
 	return int((math.Abs(float64(p2.x-p1.x)) + math.Abs(float64(p2.y-p1.y))))
 }
 
-func getSearchCoordinates(points []point) (point, point) {
+func getSearchCoordinates() (point, point) {
 	topLeft := point{x: math.MaxInt64, y: math.MaxInt64}
 	bottomRight := point{}
 	for _, p := range points {
@@ -36,7 +46,7 @@ func getSearchCoordinates(points []point) (point, point) {
 	return topLeft, bottomRight
 }
 
-func getClosestDistancePointID(plotPoint point, points []point) int {
+func getClosestDistancePointID(plotPoint point) int {
 	closestDistance := math.MaxInt64
 	closestDistanceID := -1
 	for _, p := range points {
@@ -52,10 +62,10 @@ func getClosestDistancePointID(plotPoint point, points []point) int {
 	return closestDistanceID
 }
 
-func calculateDistances(plot [][]int, topLeft point, points []point) {
+func calculateDistances(plot [][]int, topLeft point) {
 	for i := topLeft.x; i < len(plot); i++ {
 		for j := topLeft.y; j < len(plot[i]); j++ {
-			plot[i][j] = getClosestDistancePointID(point{x: i, y: j}, points)
+			plot[i][j] = getClosestDistancePointID(point{x: i, y: j})
 		}
 	}
 }
@@ -78,29 +88,25 @@ func getLargestArea(plot [][]int, topLeft point) int {
 	return max
 }
 
-func main() {
-	inputArray := strings.Split(util.GetInputString(), "\n")
+func run(cmd *cobra.Command, _ []string) {
+	input := strings.Split(util.ReadInput(file, example), "\n")
 
-	var points []point
-
-	for i := 0; i < len(inputArray); i++ {
+	for i := 0; i < len(input); i++ {
 		p := point{id: i + 1}
-		_, e := fmt.Sscanf(inputArray[i], "%d, %d", &p.x, &p.y)
+		_, e := fmt.Sscanf(input[i], "%d, %d", &p.x, &p.y)
 		if e != nil {
 			panic(e)
 		}
 		points = append(points, p)
 	}
 
-	topLeft, bottomRight := getSearchCoordinates(points)
-	fmt.Printf("Search coordinates: [%d,%d] x [%d,%d]\n", topLeft.x, topLeft.y, bottomRight.x, bottomRight.y)
-
+	topLeft, bottomRight := getSearchCoordinates()
 	plot := make([][]int, bottomRight.x+1)
 	for i := 0; i < bottomRight.x+1; i++ {
 		plot[i] = make([]int, bottomRight.y+1)
 	}
 
-	calculateDistances(plot, topLeft, points)
+	calculateDistances(plot, topLeft)
 
 	fmt.Printf("Largest area is %d\n", getLargestArea(plot, topLeft))
 }

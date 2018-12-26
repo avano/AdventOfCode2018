@@ -1,15 +1,23 @@
-package main
+package day12b
 
 import (
 	"fmt"
 	"strings"
 
 	"github.com/avano/AdventOfCode2018/internal/app/util"
+	"github.com/spf13/cobra"
 )
 
 const generations = 50000000000
 const edgePotsSize = 5
 const diffCheckCount = 1000
+
+var file *string
+var example *bool
+
+func init() {
+	file, example = util.RegisterCommand("day12b", "Day 12 - Second Part", run)
+}
 
 var rules []*rule
 
@@ -74,12 +82,6 @@ func appendEdgePots(pots []*pot, start bool) []*pot {
 	return pots
 }
 
-func printPots(pots []*pot, gen int) {
-	for i := 0; i < len(pots); i++ {
-		fmt.Printf("%s", string(pots[i].status))
-	}
-}
-
 func doesEdgeChange(pots []*pot, index int) bool {
 	var subStr string
 	subArray := pots[index-2 : index+3]
@@ -104,8 +106,8 @@ func countPlants(pots []*pot) int {
 	return result
 }
 
-func main() {
-	input := strings.Split(util.GetInputString(), "\n")
+func run(cmd *cobra.Command, _ []string) {
+	input := strings.Split(util.ReadInput(file, example), "\n")
 
 	pots := parsePots(strings.Split(input[0], "initial state: ")[1])
 

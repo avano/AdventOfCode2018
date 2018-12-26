@@ -1,4 +1,4 @@
-package main
+package day01b
 
 import (
 	"fmt"
@@ -6,25 +6,33 @@ import (
 	"strings"
 
 	"github.com/avano/AdventOfCode2018/internal/app/util"
+	"github.com/spf13/cobra"
 )
 
+var file *string
+var example *bool
+
+func init() {
+	file, example = util.RegisterCommand("day01b", "Day 1 - Second Part", run)
+}
+
 func exists(seen map[int]bool, freq int) bool {
-	if seen[freq] == true {
+	if _, ex := seen[freq]; ex {
 		return true
 	}
 	seen[freq] = true
 	return false
 }
 
-func main() {
-	inputArray := strings.Split(util.GetInputString(), "\n")
+func run(cmd *cobra.Command, _ []string) {
+	input := strings.Split(util.ReadInput(file, example), "\n")
 
 	frequency := 0
 	seenFrequencies := make(map[int]bool)
 
 outer:
 	for {
-		for _, line := range inputArray {
+		for _, line := range input {
 			num, err := strconv.Atoi(line)
 			if err != nil {
 				panic(err)
@@ -37,5 +45,5 @@ outer:
 		}
 	}
 
-	fmt.Println("Duplicate frequency: ", frequency)
+	fmt.Printf("Duplicate frequency: %d\n", frequency)
 }

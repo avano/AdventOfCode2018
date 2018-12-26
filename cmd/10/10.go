@@ -1,4 +1,4 @@
-package main
+package day10
 
 import (
 	"fmt"
@@ -7,17 +7,21 @@ import (
 	"time"
 
 	"github.com/avano/AdventOfCode2018/internal/app/util"
+	"github.com/spf13/cobra"
 )
 
 const displayableSize = 80
 
+var file *string
+var example *bool
+
+func init() {
+	file, example = util.RegisterCommand("day10", "Day 10", run)
+}
+
 type point struct {
 	x, y, xVelocity, yVelocity int
 }
-
-// func normalize(p *point) (int, int) {
-// 	return p.x + int(math.Abs(minX)), p.y + int(math.Abs(minY))
-// }
 
 func getArea(pointArray []*point) (point, point) {
 	topLeft, bottomRight := point{x: pointArray[0].x, y: pointArray[0].y}, point{x: pointArray[0].x, y: pointArray[0].y}
@@ -78,11 +82,11 @@ func printArea(pointArray []*point, topLeft, bottomRight point) {
 	}
 }
 
-func main() {
-	inputArray := strings.Split(util.GetInputString(), "\n")
+func run(cmd *cobra.Command, _ []string) {
+	input := strings.Split(util.ReadInput(file, example), "\n")
 	var pointArray []*point
 
-	for _, line := range inputArray {
+	for _, line := range input {
 		pointArray = append(pointArray, parsePoint(line))
 	}
 
@@ -91,7 +95,7 @@ func main() {
 		topLeft, bottomRight := getArea(pointArray)
 		width := int(math.Abs(float64(topLeft.y - bottomRight.y)))
 		if lastWidth < width {
-			fmt.Printf("Elapsed time: %d seconds", i-1)
+			fmt.Printf("Elapsed time: %d seconds\n", i-1)
 			break
 		} else {
 			lastWidth = width

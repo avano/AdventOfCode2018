@@ -1,4 +1,4 @@
-package main
+package day05b
 
 import (
 	"fmt"
@@ -7,7 +7,15 @@ import (
 	"unicode"
 
 	"github.com/avano/AdventOfCode2018/internal/app/util"
+	"github.com/spf13/cobra"
 )
+
+var file *string
+var example *bool
+
+func init() {
+	file, example = util.RegisterCommand("day05a", "Day 5 - Second Part", run)
+}
 
 func react(input string) string {
 	reacted := false
@@ -34,14 +42,13 @@ func replace(input string, char string) string {
 	return input
 }
 
-func main() {
-	input := util.GetInputString()
+func run(cmd *cobra.Command, _ []string) {
+	input := util.ReadInput(file, example)
 
 	var bestLetter rune
 	bestLength := math.MaxInt64
 	for ch := 'a'; ch <= 'z'; ch++ {
 		currentLength := len(react(replace(input, string(ch))))
-		fmt.Printf("Length: %d (leaving out %c)\n", currentLength, ch)
 		if currentLength < bestLength {
 			bestLength = currentLength
 			bestLetter = ch

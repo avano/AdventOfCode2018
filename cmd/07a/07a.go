@@ -1,4 +1,4 @@
-package main
+package day07a
 
 import (
 	"fmt"
@@ -6,7 +6,15 @@ import (
 	"strings"
 
 	"github.com/avano/AdventOfCode2018/internal/app/util"
+	"github.com/spf13/cobra"
 )
+
+var file *string
+var example *bool
+
+func init() {
+	file, example = util.RegisterCommand("day07a", "Day 7 - First Part", run)
+}
 
 type step struct {
 	name          string
@@ -84,12 +92,12 @@ func executeSteps(steps []*step) string {
 	return executed + executeSteps(steps)
 }
 
-func main() {
-	inputArray := strings.Split(util.GetInputString(), "\n")
+func run(cmd *cobra.Command, _ []string) {
+	input := strings.Split(util.ReadInput(file, example), "\n")
 
 	var steps []*step
 
-	for _, line := range inputArray {
+	for _, line := range input {
 		steps = createStep(steps, line)
 	}
 

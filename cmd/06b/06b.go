@@ -1,4 +1,4 @@
-package main
+package day06b
 
 import (
 	"fmt"
@@ -6,9 +6,17 @@ import (
 	"strings"
 
 	"github.com/avano/AdventOfCode2018/internal/app/util"
+	"github.com/spf13/cobra"
 )
 
 const MaxDistance = 10000
+
+var file *string
+var example *bool
+
+func init() {
+	file, example = util.RegisterCommand("day06b", "Day 6 - Second Part", run)
+}
 
 type point struct {
 	id, x, y int
@@ -67,14 +75,14 @@ func getDistanceAreaSize(plot [][]bool, topLeft point) int {
 	return size
 }
 
-func main() {
-	inputArray := strings.Split(util.GetInputString(), "\n")
+func run(cmd *cobra.Command, _ []string) {
+	input := strings.Split(util.ReadInput(file, example), "\n")
 
 	var points []point
 
-	for i := 0; i < len(inputArray); i++ {
+	for i := 0; i < len(input); i++ {
 		p := point{id: i + 1}
-		_, e := fmt.Sscanf(inputArray[i], "%d, %d", &p.x, &p.y)
+		_, e := fmt.Sscanf(input[i], "%d, %d", &p.x, &p.y)
 		if e != nil {
 			panic(e)
 		}
@@ -82,8 +90,6 @@ func main() {
 	}
 
 	topLeft, bottomRight := getSearchCoordinates(points)
-	fmt.Printf("Search coordinates: [%d,%d] x [%d,%d]\n", topLeft.x, topLeft.y, bottomRight.x, bottomRight.y)
-
 	plot := make([][]bool, bottomRight.x+1)
 	for i := 0; i < bottomRight.x+1; i++ {
 		plot[i] = make([]bool, bottomRight.y+1)

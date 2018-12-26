@@ -1,16 +1,24 @@
-package main
+package day14b
 
 import (
 	"fmt"
 	"strconv"
 
 	"github.com/avano/AdventOfCode2018/internal/app/util"
+	"github.com/spf13/cobra"
 )
+
+var file *string
+var example *bool
+
+func init() {
+	file, example = util.RegisterCommand("day14b", "Day 14 - Second Part", run)
+}
 
 var recipes []int
 
-func main() {
-	input := util.GetInputString()
+func run(cmd *cobra.Command, _ []string) {
+	input := util.ReadInput(file, example)
 
 	elf1 := 0
 	elf2 := 1

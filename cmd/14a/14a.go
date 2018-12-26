@@ -1,16 +1,24 @@
-package main
+package day14a
 
 import (
 	"fmt"
 	"strconv"
 
 	"github.com/avano/AdventOfCode2018/internal/app/util"
+	"github.com/spf13/cobra"
 )
+
+var file *string
+var example *bool
+
+func init() {
+	file, example = util.RegisterCommand("day14a", "Day 14 - First Part", run)
+}
 
 var recipes []int
 
-func main() {
-	input, err := strconv.Atoi(util.GetInputString())
+func run(cmd *cobra.Command, _ []string) {
+	input, err := strconv.Atoi(util.ReadInput(file, example))
 
 	if err != nil {
 		panic(err)

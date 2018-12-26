@@ -1,17 +1,28 @@
-package main
+package day02a
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/avano/AdventOfCode2018/internal/app/util"
+	"github.com/spf13/cobra"
 )
+
+var file *string
+var example *bool
+
+func init() {
+	file, example = util.RegisterCommand("day02a", "Day 2 - First Part", run)
+}
 
 type statistics struct {
 	twoChars   int
 	threeChars int
 }
 
-func checkWord(word string, stats *statistics) {
+var stats *statistics
+
+func checkWord(word string) {
 	charCount := make(map[string]int)
 	for _, r := range word {
 		c := string(r)
@@ -36,13 +47,13 @@ func checkWord(word string, stats *statistics) {
 	}
 }
 
-func main() {
-	inputArray := strings.Split(util.GetInputString(), "\n")
-	stats := statistics{0, 0}
+func run(cmd *cobra.Command, _ []string) {
+	input := strings.Split(util.ReadInput(file, example), "\n")
+	stats = &statistics{0, 0}
 
-	for _, line := range inputArray {
-		checkWord(line, &stats)
+	for _, line := range input {
+		checkWord(line)
 	}
 
-	println("Checksum: ", stats.twoChars*stats.threeChars)
+	fmt.Printf("Checksum: %d\n", stats.twoChars*stats.threeChars)
 }

@@ -1,11 +1,19 @@
-package main
+package day03a
 
 import (
 	"fmt"
 	"strings"
 
 	"github.com/avano/AdventOfCode2018/internal/app/util"
+	"github.com/spf13/cobra"
 )
+
+var file *string
+var example *bool
+
+func init() {
+	file, example = util.RegisterCommand("day03a", "Day 3 - First Part", run)
+}
 
 type claim struct {
 	id, posLeft, posTop, sizeX, sizeY int
@@ -45,12 +53,12 @@ func processClaim(fabric [][]int, c claim) {
 	}
 }
 
-func main() {
-	inputArray := strings.Split(util.GetInputString(), "\n")
+func run(cmd *cobra.Command, _ []string) {
+	input := strings.Split(util.ReadInput(file, example), "\n")
 
 	var claims []claim
 
-	for _, line := range inputArray {
+	for _, line := range input {
 		claims = append(claims, parseClaim(line))
 	}
 
@@ -74,5 +82,5 @@ func main() {
 		}
 	}
 
-	println("Overlaps: ", overlaps)
+	fmt.Printf("Overlaps: %d\n", overlaps)
 }

@@ -1,4 +1,4 @@
-package main
+package day13a
 
 import (
 	"fmt"
@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/avano/AdventOfCode2018/internal/app/util"
+	"github.com/spf13/cobra"
 )
 
 const up = 0
@@ -14,6 +15,13 @@ const down = 2
 const left = 3
 
 const carRunes = "><^v"
+
+var file *string
+var example *bool
+
+func init() {
+	file, example = util.RegisterCommand("day13a", "Day 13 - First Part", run)
+}
 
 type car struct {
 	x, y      int
@@ -115,8 +123,8 @@ func loadMapWithCars(input []string) {
 	}
 }
 
-func main() {
-	input := strings.Split(util.GetInputString(), "\n")
+func run(cmd *cobra.Command, _ []string) {
+	input := strings.Split(util.ReadInput(file, example), "\n")
 
 	m = make([][]rune, len(input))
 	for y := 0; y < len(input); y++ {

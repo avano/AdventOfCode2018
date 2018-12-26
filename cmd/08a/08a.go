@@ -1,4 +1,4 @@
-package main
+package day08a
 
 import (
 	"fmt"
@@ -6,7 +6,15 @@ import (
 	"strings"
 
 	"github.com/avano/AdventOfCode2018/internal/app/util"
+	"github.com/spf13/cobra"
 )
+
+var file *string
+var example *bool
+
+func init() {
+	file, example = util.RegisterCommand("day08a", "Day 8 - First Part", run)
+}
 
 type node struct {
 	children []*node
@@ -64,10 +72,10 @@ func countMetadata(n *node) int {
 	}
 }
 
-func main() {
-	inputArray := strings.Split(util.GetInputString(), " ")
+func run(cmd *cobra.Command, _ []string) {
+	input := strings.Split(util.ReadInput(file, example), " ")
 
-	n, _ := parseNode(inputArray, 0)
+	n, _ := parseNode(input, 0)
 
 	fmt.Println(countMetadata(n))
 }

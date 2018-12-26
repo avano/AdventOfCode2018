@@ -1,14 +1,22 @@
-package main
+package day12a
 
 import (
 	"fmt"
 	"strings"
 
 	"github.com/avano/AdventOfCode2018/internal/app/util"
+	"github.com/spf13/cobra"
 )
 
 const generations = 20
 const edgePotsSize = 5
+
+var file *string
+var example *bool
+
+func init() {
+	file, example = util.RegisterCommand("day12a", "Day 12 - First Part", run)
+}
 
 var rules []*rule
 
@@ -73,12 +81,6 @@ func appendEdgePots(pots []*pot, start bool) []*pot {
 	return pots
 }
 
-func printPots(pots []*pot, gen int) {
-	for i := 0; i < len(pots); i++ {
-		fmt.Printf("%s", string(pots[i].status))
-	}
-}
-
 func doesEdgeChange(pots []*pot, index int) bool {
 	var subStr string
 	subArray := pots[index-2 : index+3]
@@ -103,8 +105,8 @@ func countPlants(pots []*pot) int {
 	return result
 }
 
-func main() {
-	input := strings.Split(util.GetInputString(), "\n")
+func run(cmd *cobra.Command, _ []string) {
+	input := strings.Split(util.ReadInput(file, example), "\n")
 
 	pots := parsePots(strings.Split(input[0], "initial state: ")[1])
 
@@ -120,8 +122,6 @@ func main() {
 			applyRules(pots, i)
 		}
 		changeStatus(pots)
-		printPots(pots, gen)
-		fmt.Println()
 		// Check if there is a change in first/last 5 pots, if yes, add new empty pots on respective side
 		if doesEdgeChange(pots, 2) {
 			pots = appendEdgePots(pots, true)

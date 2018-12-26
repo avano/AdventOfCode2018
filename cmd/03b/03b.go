@@ -1,11 +1,19 @@
-package main
+package day03b
 
 import (
 	"fmt"
 	"strings"
 
 	"github.com/avano/AdventOfCode2018/internal/app/util"
+	"github.com/spf13/cobra"
 )
+
+var file *string
+var example *bool
+
+func init() {
+	file, example = util.RegisterCommand("day03b", "Day 3 - Second Part", run)
+}
 
 type claim struct {
 	id, posLeft, posTop, sizeX, sizeY int
@@ -40,11 +48,6 @@ func getDimensions(claims []claim) (int, int) {
 func processClaim(fabric [][]int, c claim, check bool) bool {
 	overlap := false
 
-	for i := c.posTop; i < c.posTop+c.sizeY; i++ {
-		for j := c.posLeft; j < c.posLeft+c.sizeX; j++ {
-
-		}
-	}
 outer:
 	for i := c.posTop; i < c.posTop+c.sizeY; i++ {
 		for j := c.posLeft; j < c.posLeft+c.sizeX; j++ {
@@ -60,17 +63,17 @@ outer:
 	}
 
 	if check && !overlap {
-		println("Not overlapping claim: #", c.id)
+		fmt.Printf("Not overlapping claim: #%d\n", c.id)
 	}
 	return !overlap
 }
 
-func main() {
-	inputArray := strings.Split(util.GetInputString(), "\n")
+func run(cmd *cobra.Command, _ []string) {
+	input := strings.Split(util.ReadInput(file, example), "\n")
 
 	var claims []claim
 
-	for _, line := range inputArray {
+	for _, line := range input {
 		claims = append(claims, parseClaim(line))
 	}
 

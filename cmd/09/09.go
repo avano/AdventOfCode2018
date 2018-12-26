@@ -1,10 +1,18 @@
-package main
+package day09
 
 import (
 	"fmt"
 
 	"github.com/avano/AdventOfCode2018/internal/app/util"
+	"github.com/spf13/cobra"
 )
+
+var file *string
+var example *bool
+
+func init() {
+	file, example = util.RegisterCommand("day09", "Day 9", run)
+}
 
 type record struct {
 	next   *record
@@ -67,8 +75,8 @@ func (list *marbleList) insertMarble(num int) int {
 	return score
 }
 
-func main() {
-	input := util.GetInputString()
+func run(cmd *cobra.Command, _ []string) {
+	input := util.ReadInput(file, example)
 
 	var players, lastMarble int
 
@@ -84,16 +92,27 @@ func main() {
 	list := marbleList{}
 	list.insert(&init)
 
+	p1HighScore := 0
 	playerScore := make(map[int]int)
-	for i := 0; i < lastMarble; i++ {
+	for i := 0; i < lastMarble*100; i++ {
 		playerScore[i%players+1] += list.insertMarble(i + 1)
-	}
-
-	max := 0
-	for _, v := range playerScore {
-		if v > max {
-			max = v
+		if i == lastMarble {
+			highScore := 0
+			for _, v := range playerScore {
+				if v > highScore {
+					highScore = v
+				}
+			}
+			p1HighScore = highScore
 		}
 	}
-	fmt.Printf("High score: %d\n", max)
+
+	highScore := 0
+	for _, v := range playerScore {
+		if v > highScore {
+			highScore = v
+		}
+	}
+	fmt.Printf("Part 1 High score: %d\n", p1HighScore)
+	fmt.Printf("Part 2 High score: %d\n", highScore)
 }

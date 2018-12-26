@@ -1,13 +1,21 @@
-package main
+package day11a
 
 import (
 	"fmt"
 	"strconv"
 
 	"github.com/avano/AdventOfCode2018/internal/app/util"
+	"github.com/spf13/cobra"
 )
 
 const size = 300
+
+var file *string
+var example *bool
+
+func init() {
+	file, example = util.RegisterCommand("day11a", "Day 11 - First Part", run)
+}
 
 type point struct {
 	x, y int
@@ -45,8 +53,8 @@ func computeCell(x, y, serial int) int {
 	return powerLevel
 }
 
-func main() {
-	gridSerialNo, err := strconv.Atoi(util.GetInputString())
+func run(cmd *cobra.Command, _ []string) {
+	gridSerialNo, err := strconv.Atoi(util.ReadInput(file, example))
 	if err != nil {
 		panic(err)
 	}

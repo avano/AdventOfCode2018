@@ -1,11 +1,19 @@
-package main
+package day05a
 
 import (
 	"fmt"
 	"unicode"
 
 	"github.com/avano/AdventOfCode2018/internal/app/util"
+	"github.com/spf13/cobra"
 )
+
+var file *string
+var example *bool
+
+func init() {
+	file, example = util.RegisterCommand("day05a", "Day 5 - First Part", run)
+}
 
 func react(input string) string {
 	reacted := false
@@ -24,7 +32,7 @@ func react(input string) string {
 	return input
 }
 
-func main() {
-	input := util.GetInputString()
-	fmt.Println("Final length: ", len(react(input)))
+func run(cmd *cobra.Command, _ []string) {
+	input := util.ReadInput(file, example)
+	fmt.Printf("Final length: %d\n", len(react(input)))
 }

@@ -1,11 +1,19 @@
-package main
+package day02b
 
 import (
 	"fmt"
 	"strings"
 
 	"github.com/avano/AdventOfCode2018/internal/app/util"
+	"github.com/spf13/cobra"
 )
+
+var file *string
+var example *bool
+
+func init() {
+	file, example = util.RegisterCommand("day02b", "Day 2 - Second Part", run)
+}
 
 func checkWords(w1, w2 string) (bool, string) {
 	mismatches := 0
@@ -23,15 +31,15 @@ func checkWords(w1, w2 string) (bool, string) {
 	return true, substring
 }
 
-func main() {
-	inputArray := strings.Split(util.GetInputString(), "\n")
+func run(cmd *cobra.Command, _ []string) {
+	input := strings.Split(util.ReadInput(file, example), "\n")
 
 outer:
-	for i := 0; i < len(inputArray)-1; i++ {
-		for j := i + 1; j < len(inputArray); j++ {
-			matches, commonString := checkWords(inputArray[i], inputArray[j])
+	for i := 0; i < len(input)-1; i++ {
+		for j := i + 1; j < len(input); j++ {
+			matches, commonString := checkWords(input[i], input[j])
 			if matches {
-				fmt.Println("Common substring: ", commonString)
+				fmt.Printf("Common substring: %s\n", commonString)
 				break outer
 			}
 		}

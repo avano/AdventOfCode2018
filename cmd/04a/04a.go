@@ -1,4 +1,4 @@
-package main
+package day04a
 
 import (
 	"fmt"
@@ -7,7 +7,15 @@ import (
 	"strings"
 
 	"github.com/avano/AdventOfCode2018/internal/app/util"
+	"github.com/spf13/cobra"
 )
+
+var file *string
+var example *bool
+
+func init() {
+	file, example = util.RegisterCommand("day04a", "Day 4 - First Part", run)
+}
 
 type guard struct {
 	id    int
@@ -16,7 +24,7 @@ type guard struct {
 
 func getID(input string) int {
 	id := strings.Fields(input)[3]
-	idInt, err := strconv.Atoi(id[1:len(id)])
+	idInt, err := strconv.Atoi(id[1:])
 	if err != nil {
 		panic(err)
 	}
@@ -24,7 +32,8 @@ func getID(input string) int {
 }
 
 func getMinute(input string) int {
-	minuteString := input[strings.Index(input, ":")+1 : strings.Index(input, ":")+3]
+	colonIndex := strings.Index(input, ":")
+	minuteString := input[colonIndex+1 : colonIndex+3]
 	minuteInt, err := strconv.Atoi(minuteString)
 	if err != nil {
 		panic(err)
@@ -57,16 +66,16 @@ func processGuard(guards []guard, timetable []string) guard {
 	return g
 }
 
-func main() {
-	inputArray := strings.Split(util.GetInputString(), "\n")
-	sort.Strings(inputArray)
+func run(cmd *cobra.Command, _ []string) {
+	input := strings.Split(util.ReadInput(file, example), "\n")
+	sort.Strings(input)
 
 	var guards []guard
 	lastIndex := 0
-	for i := 0; i < len(inputArray); i++ {
-		if i == len(inputArray)-1 || strings.Contains(inputArray[i+1], "Guard") {
-			if len(inputArray[lastIndex:i]) > 0 {
-				guards = append(guards, processGuard(guards, inputArray[lastIndex:i+1]))
+	for i := 0; i < len(input); i++ {
+		if i == len(input)-1 || strings.Contains(input[i+1], "Guard") {
+			if len(input[lastIndex:i]) > 0 {
+				guards = append(guards, processGuard(guards, input[lastIndex:i+1]))
 			}
 			lastIndex = i + 1
 		}
@@ -85,8 +94,6 @@ func main() {
 		}
 	}
 
-	fmt.Printf("Most sleepy guard #%d\n", guards[mostSleepyGuardIndex].id)
-
 	mostSleepyMinute := 0
 	max = 0
 	for k, v := range guards[mostSleepyGuardIndex].sleep {
@@ -96,6 +103,5 @@ func main() {
 		}
 	}
 
-	fmt.Printf("Most sleepy minute %d (%d times)\n", mostSleepyMinute, max)
 	fmt.Printf("Result: %d\n", guards[mostSleepyGuardIndex].id*mostSleepyMinute)
 }
