@@ -30,6 +30,15 @@ var direction map[int]rune
 var m [][]rune
 var cars []*car
 
+func getCarAtCoordinates(x, y, index int) int {
+	for i := 0; i < len(cars); i++ {
+		if cars[i] != nil && index != i && cars[i].x == x && cars[i].y == y {
+			return i
+		}
+	}
+	return -1
+}
+
 func sortCars() {
 	sort.Slice(cars, func(i, j int) bool {
 		if cars[i].y > cars[j].y {
@@ -42,8 +51,11 @@ func sortCars() {
 	})
 }
 
-func moveCars() bool {
+func moveCars() {
 	for i := 0; i < len(cars); i++ {
+		if cars[i] == nil {
+			continue
+		}
 		m[cars[i].y][cars[i].x] = cars[i].currentTile
 		switch cars[i].direction {
 		case up:
@@ -65,30 +77,40 @@ func moveCars() bool {
 		}
 
 		if strings.ContainsAny(string(m[cars[i].y][cars[i].x]), carRunes) {
-			fmt.Printf("Crash at [%d,%d]\n", cars[i].x, cars[i].y)
-			return false
-		}
-
-		if m[cars[i].y][cars[i].x] == '/' {
-			cars[i].direction = slash[cars[i].direction]
-		} else if m[cars[i].y][cars[i].x] == '\\' {
-			cars[i].direction = backSlash[cars[i].direction]
-		} else if m[cars[i].y][cars[i].x] == '+' {
-			dir := (cars[i].direction + cars[i].intersection) % 4
-			if dir < 0 {
-				dir = dir + 4
+			otherCarIndex := getCarAtCoordinates(cars[i].x, cars[i].y, i)
+			m[cars[otherCarIndex].y][cars[otherCarIndex].x] = cars[otherCarIndex].currentTile
+			cars[otherCarIndex] = nil
+			cars[i] = nil
+		} else {
+			if m[cars[i].y][cars[i].x] == '/' {
+				cars[i].direction = slash[cars[i].direction]
+			} else if m[cars[i].y][cars[i].x] == '\\' {
+				cars[i].direction = backSlash[cars[i].direction]
+			} else if m[cars[i].y][cars[i].x] == '+' {
+				dir := (cars[i].direction + cars[i].intersection) % 4
+				if dir < 0 {
+					dir = dir + 4
+				}
+				cars[i].direction = dir
+				cars[i].intersection++
+				if cars[i].intersection == 2 {
+					cars[i].intersection = -1
+				}
 			}
-			cars[i].direction = dir
-			cars[i].intersection++
-			if cars[i].intersection == 2 {
-				cars[i].intersection = -1
-			}
+			cars[i].currentTile = m[cars[i].y][cars[i].x]
+			m[cars[i].y][cars[i].x] = direction[cars[i].direction]
 		}
-		cars[i].currentTile = m[cars[i].y][cars[i].x]
-		m[cars[i].y][cars[i].x] = direction[cars[i].direction]
 	}
+}
 
-	return true
+func removeCrashedCars() {
+	var array []*car
+	for i := 0; i < len(cars); i++ {
+		if cars[i] != nil {
+			array = append(array, cars[i])
+		}
+	}
+	cars = array
 }
 
 func getDirectionInt(r rune) (bool, int) {
@@ -144,9 +166,13 @@ func main() {
 
 	loadMapWithCars(input)
 
-	ok := true
-	for ok {
+	for {
 		sortCars()
-		ok = moveCars()
+		moveCars()
+		removeCrashedCars()
+		if len(cars) == 1 {
+			fmt.Printf("Last car at [%d,%d]\n", cars[0].x, cars[0].y)
+			break
+		}
 	}
 }
