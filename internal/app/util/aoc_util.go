@@ -17,8 +17,8 @@ func defaultFile(caller string) string {
 
 // ReadInput loads the input as string
 func ReadInput(file *string, example *bool) string {
-	f := ""
-	if *file == "" {
+	f := *file
+	if f == "" {
 		_, caller, _, _ := runtime.Caller(1)
 		f = defaultFile(caller)
 		if *example {

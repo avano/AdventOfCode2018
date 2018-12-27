@@ -28,6 +28,8 @@ import (
 	_ "github.com/avano/AdventOfCode2018/cmd/13b"
 	_ "github.com/avano/AdventOfCode2018/cmd/14a"
 	_ "github.com/avano/AdventOfCode2018/cmd/14b"
+	_ "github.com/avano/AdventOfCode2018/cmd/15a"
+	_ "github.com/avano/AdventOfCode2018/cmd/15b"
 )
 
 func main() {
